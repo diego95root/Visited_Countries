@@ -3,5 +3,6 @@ Updated version of my old project which consisted basically of an HTML that used
 
 There could be infinitely possible improvements (especially concerning the UI) to the project, so I invite you to fork the repository!
 
+## Screenshots
 
 ![Image](https://github.com/diego95root/Visited_Countries/blob/master/Images/screenshot.png "List of available ips to poison:")
