@@ -3,6 +3,10 @@ Updated version of my old project which consisted basically of an HTML that used
 
 There could be infinitely possible improvements (especially concerning the UI) to the project, so I invite you to fork the repository!
 
+## Usage
+
+You just need to save both ```index.php``` and ```data.db``` in the same directory. Then, if you're using the app locally, run ```php -S localhost:port``` (replace port with any port available) in order to get it up and running. Finally, access the app in a browser typing ```localhost:port```.
+
 ## Screenshots
 
 ![Image](https://github.com/diego95root/Visited_Countries/blob/master/Images/screen0.png "First screenshot")
