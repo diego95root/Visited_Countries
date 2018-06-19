@@ -10,6 +10,16 @@ else if (isset($_POST["country_remove"])){
 	$db->exec("DELETE from countries WHERE Names='".$_POST['country_remove']."'");
 }
 
+if (isset($_GET["countries"])){
+	$countries = array();
+	while ($row = $result->fetchArray()) {
+		$name = $row['Names'];
+		array_push($countries, $name);
+	}
+	echo json_encode($countries);
+	return;
+}
+
 $html = <<<EOT
 <!DOCTYPE html>
 <html>
@@ -26,6 +36,30 @@ $html = <<<EOT
 	function clearCoor() {
 	    document.getElementById('demo').innerHTML = '';
 	}
+
+	function add_remove(id){
+		if (id==="add"){
+			var country = document.getElementById("tags").value;
+			$.ajax({
+	        data:  {"country_add" : country},
+	        url:   'index.php',
+	        type:  'post',
+	        success:  function (response) {
+	        }
+		  });
+		}
+		else if (id==="rem"){
+			var country = document.getElementById("tags2").value;
+			$.ajax({
+	        data:  {"country_remove" : country},
+	        url:   'index.php',
+	        type:  'post',
+	        success:  function (response) {
+	        }
+		  });
+		}
+	}
+
 	</script>
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -71,10 +105,10 @@ $html = <<<EOT
 		     top: 0; /* Stay at the top */
 		     left: 0;
 				 margin-left:-250px;
-				 padding-bottom:900px;
+				 padding-bottom:909px;
 		     background-color: #111; /* Black*/
 		     overflow-x: hidden; /* Disable horizontal scroll */
-				 overflow-y: scroll;
+				 overflow-y: auto;
 		     padding-top: 60px; /* Place content 60px from the top */
 		     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
 		 }
@@ -126,13 +160,13 @@ $html = <<<EOT
 			<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 			<p>Add country:</p>
 			<div class="ui-widget" style="padding: 10px; margin-left:20px">
-				<form action="index.php" method="post">
+				<form action="javascript:;" onsubmit="add_remove('add');">
   				<input id="tags" name="country_add">
 				</form>
 			</div>
 			<p>Remove country:</p>
 			<div class="ui-widget" style="padding: 10px; margin-left:20px">
-				<form action="index.php" method="post">
+				<form action="javascript:;" onsubmit="add_remove('rem');">
 					<input id="tags2" name="country_remove">
 				</form>
 			</div>
@@ -146,7 +180,7 @@ $html = <<<EOT
 		<div id="main">
 			<p id='demo'></p>
 			<div>
-			<svg id='world' type='image/svg+xml' onmousemove='showCoords(event)' onmouseout='clearCoor()  style='position: absolute; width:100%;'>
+			<svg id='world' type='image/svg+xml' onmousemove='showCoords(event)' onmouseout='clearCoor()'  style='position: absolute; width:100%;'>
 				<defs>
 					<style type='text/css'>
 						.land
@@ -438,15 +472,27 @@ $html = <<<EOT
 				</g>
 			</svg>
 			<script>
-				for (var i=0; i < document.getElementsByClassName('visited').length ; i++){
-					var name = document.getElementsByClassName('visited')[i].getAttribute('title');
-					var para = document.createElement('li');
-					var node = document.createTextNode(name);
-					para.appendChild(node);
-
-					var element = document.getElementById('list');
-					element.appendChild(para);
-				};
+				$.ajax({
+						url: "index.php",
+						type: 'GET',
+						data: "countries",
+						cache: false,
+						success: function(res) {
+							var json = JSON.parse(res);
+							for (i=0; i<json.length; i++){
+								all = document.getElementsByTagName('path');
+								for (x=0; x<all.length;x++){
+									if (json[i] === all[x].getAttribute("title")){
+										all[x].setAttribute("class", "visited");
+										var para = document.createElement('li');
+										var node = document.createTextNode(json[i]);
+										para.appendChild(node);
+										document.getElementById('list').appendChild(para);
+									}
+								}
+							}
+						}
+				});
 
 				//
 				function openNav() {
@@ -489,25 +535,6 @@ $html = <<<EOT
 EOT;
 
 
-$dom = new DOMDocument();
-libxml_use_internal_errors(true);
-$dom->loadHTML($html);
-libxml_use_internal_errors(false);
-
-$countries = array();
-
-while ($row = $result->fetchArray()) {
-	$name = $row['Names'];
-	array_push($countries, $name);
-}
-
-foreach ($dom->getElementsByTagName('path') as $link)
-{
-    if (in_array($link->getAttribute('title'), $countries)) {
-        $link->setAttribute('class', 'visited');
-    }
-}
-
-echo $dom->saveHTML();
+echo $html;
 
 ?>
