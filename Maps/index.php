@@ -38,25 +38,39 @@ $html = <<<EOT
 	}
 
 	function add_remove(id){
-		if (id==="add"){
+		var availableTags = [];
+		for (var i=0; i < document.getElementsByClassName('land').length ; i++){
+			var name = document.getElementsByClassName('land')[i].getAttribute('title');
+			availableTags.push(name);
+		};
+		for (var i=0; i < document.getElementsByClassName('visited').length ; i++){
+			var name = document.getElementsByClassName('visited')[i].getAttribute('title');
+			availableTags.push(name);
+		};
+		if (id==="add" && availableTags.indexOf(document.getElementById("tags").value) > -1){
 			var country = document.getElementById("tags").value;
 			$.ajax({
 	        data:  {"country_add" : country},
 	        url:   'index.php',
 	        type:  'post',
 	        success:  function (response) {
+						build();
 	        }
 		  });
 		}
-		else if (id==="rem"){
+		else if (id==="rem" && availableTags.indexOf(document.getElementById("tags2").value) > -1){
 			var country = document.getElementById("tags2").value;
 			$.ajax({
 	        data:  {"country_remove" : country},
 	        url:   'index.php',
 	        type:  'post',
 	        success:  function (response) {
+						build();
 	        }
 		  });
+		}
+		else {
+			alert("No country with that name...");
 		}
 	}
 
@@ -71,49 +85,57 @@ $html = <<<EOT
 			transition: 1s;
 			font-family: Arial,Helvetica,sans-serif;
 			font-size: 1em;
-			overflow-y:hidden;
+			overflow:hidden;
 		}
 		#world {
-			width:1050px;
+			width:100%;
 			padding:20px;
-			height:700px;
-			transform: scale(1.07);
+			height:100%;
+			transform: scale(1.10);
 			margin-top:25px;
-			margin-left:38px;
+			margin-left:15%;
 			position:absolute;
+		}
+		input {
+			outline-width: 0;
+			background: #eee;
+			border:1px solid #fff;
+			padding:6px;
 		}
 		#demo {
 			position:absolute;
 			margin-top:710px;
-			margin-left:510px;
+			margin-left:50%;
 			font-weight: 900;
+		}
+		#list {
+			max-height:320px;
+			overflow-y:scroll;
+			width:180px
 		}
 		.ui-autocomplete {
 			 max-height: 300px;
 			 overflow-y: auto;
 			 max-width: 160px;
-			 /* prevent horizontal scrollbar */
 			 overflow-x: hidden;
-			 /* add padding to account for vertical scrollbar */
 			 padding-right: 20px;
 		 }
 		 .sidenav {
-		     height: 80%; /* 100% Full-height */
-		     width: 250px; /* 0 width - change this with JavaScript */
-		     position: fixed; /* Stay in place */
-		     z-index: 1; /* Stay on top */
-		     top: 0; /* Stay at the top */
+		     height: 100%;
+		     width: 250px;
+		     position: fixed;
+		     z-index: 1;
+		     top: 0;
 		     left: 0;
 				 margin-left:-250px;
-				 padding-bottom:909px;
-		     background-color: #111; /* Black*/
-		     overflow-x: hidden; /* Disable horizontal scroll */
+		     background-color: #111;
+		     overflow-x: hidden;
 				 overflow-y: auto;
-		     padding-top: 60px; /* Place content 60px from the top */
-		     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+		     padding-top: 60px;
+				 padding-bottom:70px;
+		     transition: 0.5s;
 		 }
 
-		 /* The navigation menu links */
 		 .sidenav a, .sidenav p {
 		     padding: 8px 8px 8px 32px;
 		     text-decoration: none;
@@ -128,12 +150,10 @@ $html = <<<EOT
 				 color:white;
 		 }
 
-		 /* When you mouse over the navigation links, change their color */
 		 .sidenav p:hover {
 		     color: #f1f1f1;
 		 }
 
-		 /* Position and style the close button (top right corner) */
 		 .sidenav .closebtn {
 		     position: absolute;
 		     top: 0;
@@ -142,15 +162,17 @@ $html = <<<EOT
 		     margin-left: 50px;
 		 }
 
-		 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 		 #main {
 		     transition: margin-left .5s;
 		     padding: 20px;
 		 }
 
-		 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 		 @media screen and (max-height: 450px) {
-		     .sidenav {padding-top: 15px;}
+		     .sidenav {padding-top: 10px;}
+		     .sidenav a {font-size: 18px;}
+		 }
+		 @media screen and (max-height: 800px) {
+		     .sidenav {padding-top: 20px;}
 		     .sidenav a {font-size: 18px;}
 		 }
 	</style>
@@ -161,18 +183,19 @@ $html = <<<EOT
 			<p>Add country:</p>
 			<div class="ui-widget" style="padding: 10px; margin-left:20px">
 				<form action="javascript:;" onsubmit="add_remove('add');">
-  				<input id="tags" name="country_add">
+  				<input id="tags" name="country_add" placeholder="Country to remove">
 				</form>
 			</div>
 			<p>Remove country:</p>
 			<div class="ui-widget" style="padding: 10px; margin-left:20px">
 				<form action="javascript:;" onsubmit="add_remove('rem');">
-					<input id="tags2" name="country_remove">
+					<input id="tags2" name="country_remove" placeholder="Country to add">
 				</form>
 			</div>
 			<p>Countries</p>
 			<ul id="list">
 			</ul>
+			<p style="font-size:13px; text-align:center; margin-left:-20px; padding-top:30px">Made by <a href="https://github.com/diego95root" style="color:#999; display:inline; padding:0; font-size:13px">diego95root</a></p>
 		</div>
 
 		<span onclick="openNav()"><img id="menu"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAAlwSFlzAAEnRwABJ0cBBA7FPgAAActpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+d3d3Lmlua3NjYXBlLm9yZzwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGMtVWAAAASNJREFUSA3llm0OgjAMhgHlCkZPQ2Lisf3hZUS9gvGjD/ASQhbQZHQmNqm0W/u2HbUsy7IsN/amFDHbGom8N66M7+1S/8veq9fiCaVBnQC/Gm/i4X6EdFNVVFt0LuMqZcN2SB6udRBBO/k/TSjlhAKhf0skKhx8pzBUVIHR2XiHhyPVBD4YV8bj5loqj6a5lgKfxaXilbHe8axDJINi3QGpoyPh/jCMmovpRXPpr7FEysKmuY4Ero23S0SawLwQmExoLmQPIl6RrKmSHjWTy725PN5pMAZHzeRyJ00u95HpXqkCctRJPosETnYR0OTiFEhEMxU9FgmTJ9R/Fh8oxmxo08SGlAxKSB6utR5hO/nTyM2dK9n1lqlVGf/HnUvnztOT8je6p0Ep4lSSUAAAAABJRU5ErkJggg==" style="margin:30px; padding: 10px; background: #ccc; border-radius:5px; cursor: pointer; position:absolute; z-index:11"></span>
@@ -180,7 +203,7 @@ $html = <<<EOT
 		<div id="main">
 			<p id='demo'></p>
 			<div>
-			<svg id='world' type='image/svg+xml' onmousemove='showCoords(event)' onmouseout='clearCoor()'  style='position: absolute; width:100%;'>
+			<svg id='world' type='image/svg+xml' onmousemove='showCoords(event)' onmouseout='clearCoor()'>
 				<defs>
 					<style type='text/css'>
 						.land
@@ -207,9 +230,6 @@ $html = <<<EOT
 						}
 					</style>
 					<amcharts:ammap projection='mercator' leftLongitude='-169.110266' topLatitude='83.63001' rightLongitude='190.480712' bottomLatitude='-58.488473'></amcharts:ammap>
-
-					<!-- All areas are listed in the line below. You can use this list in your script. -->
-					<!--{id:'AD'},{id:'AE'},{id:'AF'},{id:'AG'},{id:'AI'},{id:'AL'},{id:'AM'},{id:'AO'},{id:'AR'},{id:'AS'},{id:'AT'},{id:'AU'},{id:'AW'},{id:'AX'},{id:'AZ'},{id:'BA'},{id:'BB'},{id:'BD'},{id:'BE'},{id:'BF'},{id:'BG'},{id:'BH'},{id:'BI'},{id:'BJ'},{id:'BL'},{id:'BN'},{id:'BO'},{id:'BM'},{id:'BQ'},{id:'BR'},{id:'BS'},{id:'BT'},{id:'BV'},{id:'BW'},{id:'BY'},{id:'BZ'},{id:'CA'},{id:'CC'},{id:'CD'},{id:'CF'},{id:'CG'},{id:'CH'},{id:'CI'},{id:'CK'},{id:'CL'},{id:'CM'},{id:'CN'},{id:'CO'},{id:'CR'},{id:'CU'},{id:'CV'},{id:'CW'},{id:'CX'},{id:'CY'},{id:'CZ'},{id:'DE'},{id:'DJ'},{id:'DK'},{id:'DM'},{id:'DO'},{id:'DZ'},{id:'EC'},{id:'EG'},{id:'EE'},{id:'EH'},{id:'ER'},{id:'ES'},{id:'ET'},{id:'FI'},{id:'FJ'},{id:'FK'},{id:'FM'},{id:'FO'},{id:'FR'},{id:'GA'},{id:'GB'},{id:'GE'},{id:'GD'},{id:'GF'},{id:'GG'},{id:'GH'},{id:'GI'},{id:'GL'},{id:'GM'},{id:'GN'},{id:'GO'},{id:'GP'},{id:'GQ'},{id:'GR'},{id:'GS'},{id:'GT'},{id:'GU'},{id:'GW'},{id:'GY'},{id:'HK'},{id:'HM'},{id:'HN'},{id:'HR'},{id:'HT'},{id:'HU'},{id:'ID'},{id:'IE'},{id:'IL'},{id:'IM'},{id:'IN'},{id:'IO'},{id:'IQ'},{id:'IR'},{id:'IS'},{id:'IT'},{id:'JE'},{id:'JM'},{id:'JO'},{id:'JP'},{id:'JU'},{id:'KE'},{id:'KG'},{id:'KH'},{id:'KI'},{id:'KM'},{id:'KN'},{id:'KP'},{id:'KR'},{id:'XK'},{id:'KW'},{id:'KY'},{id:'KZ'},{id:'LA'},{id:'LB'},{id:'LC'},{id:'LI'},{id:'LK'},{id:'LR'},{id:'LS'},{id:'LT'},{id:'LU'},{id:'LV'},{id:'LY'},{id:'MA'},{id:'MC'},{id:'MD'},{id:'MG'},{id:'ME'},{id:'MF'},{id:'MH'},{id:'MK'},{id:'ML'},{id:'MO'},{id:'MM'},{id:'MN'},{id:'MP'},{id:'MQ'},{id:'MR'},{id:'MS'},{id:'MT'},{id:'MU'},{id:'MV'},{id:'MW'},{id:'MX'},{id:'MY'},{id:'MZ'},{id:'NA'},{id:'NC'},{id:'NE'},{id:'NF'},{id:'NG'},{id:'NI'},{id:'NL'},{id:'NO'},{id:'NP'},{id:'NR'},{id:'NU'},{id:'NZ'},{id:'OM'},{id:'PA'},{id:'PE'},{id:'PF'},{id:'PG'},{id:'PH'},{id:'PK'},{id:'PL'},{id:'PM'},{id:'PN'},{id:'PR'},{id:'PS'},{id:'PT'},{id:'PW'},{id:'PY'},{id:'QA'},{id:'RE'},{id:'RO'},{id:'RS'},{id:'RU'},{id:'RW'},{id:'SA'},{id:'SB'},{id:'SC'},{id:'SD'},{id:'SE'},{id:'SG'},{id:'SH'},{id:'SI'},{id:'SJ'},{id:'SK'},{id:'SL'},{id:'SM'},{id:'SN'},{id:'SO'},{id:'SR'},{id:'SS'},{id:'ST'},{id:'SV'},{id:'SX'},{id:'SY'},{id:'SZ'},{id:'TC'},{id:'TD'},{id:'TF'},{id:'TG'},{id:'TH'},{id:'TJ'},{id:'TK'},{id:'TL'},{id:'TM'},{id:'TN'},{id:'TO'},{id:'TR'},{id:'TT'},{id:'TV'},{id:'TW'},{id:'TZ'},{id:'UA'},{id:'UG'},{id:'UM-DQ'},{id:'UM-FQ'},{id:'UM-HQ'},{id:'UM-JQ'},{id:'UM-MQ'},{id:'UM-WQ'},{id:'US'},{id:'UY'},{id:'UZ'},{id:'VA'},{id:'VC'},{id:'VE'},{id:'VG'},{id:'VI'},{id:'VN'},{id:'VU'},{id:'WF'},{id:'WS'},{id:'YE'},{id:'YT'},{id:'ZA'},{id:'ZM'},{id:'ZW'}-->
 
 				</defs>
 				<g>
@@ -471,50 +491,59 @@ $html = <<<EOT
 					<path id='ZW' title='Zimbabwe' class='land' d='M563.508,526.797L563.254,526.625L562.907,526.513L562.465,526.461L561.892,526.482L561.186,526.577L560.429,526.462L559.62,526.14L558.949,526.026L558.147,526.166L558.111,526.169L557.973,526.06L557.753,525.825L557.388,525.783L557.289,525.729L557.207,525.641L557.153,525.529L557.132,525.404L557.192,525.018L557.159,524.975L557.062,524.928L556.861,524.882L556.38,524.707L555.774,524.537L554.791,524.351L554.409,524.303L554.32,524.246L554.21,524.104L554.021,523.661L553.844,523.369L553.421,522.918L553.354,522.779L553.375,522.421L553.406,522.133L553.451,521.889L553.431,521.66L553.425,521.376L553.438,521.186L553.381,521.104L553.228,521.046L552.791,521.02L552.263,521.031L552.246,520.743L552.195,520.297L552.097,520.041L551.975,519.908L551.732,519.769L551.241,519.579L550.572,519.29L550,518.862L549.345,518.331L549.14,518.239L548.898,517.741L548.53,516.889L548.554,516.606L548.498,516.467L548.14,516.05L548.061,515.833L547.998,515.614L547.429,515.004L547.235,514.738L547.087,514.396L546.94,514.123L546.816,514.013L546.654,513.828L546.542,513.616L546.49,513.458L546.533,513.247L546.588,513.102L547.129,513.252L547.425,513.265L547.657,513.191L547.943,513.291L548.285,513.565L548.657,513.618L549.06,513.448L549.604,513.5L550.289,513.773L550.857,513.828L551.533,513.584L552.136,512.91L552.704,512.277L553.262,511.547L553.598,510.958L554.091,510.479L554.741,510.11L555.403,509.799L556.416,509.418L556.416,509.419L556.618,509.104L556.686,508.762L556.686,508.286L556.738,507.978L556.844,507.837L557.012,507.728L557.229,507.586L557.896,507.225L558.455,506.994L559.135,506.842L559.88,506.841L560.598,506.839L561.006,506.838L561.012,507.295L561.043,507.81L561.123,507.859L561.663,507.87L562.529,507.907L563.364,507.941L563.897,508.315L564.076,508.395L564.63,508.495L565.338,509.118L566.19,509.176L566.776,509.371L567.292,509.585L567.589,509.842L567.781,509.9L568.041,509.919L568.167,509.943L568.14,510.128L567.966,510.442L567.989,510.892L568.228,511.516L568.26,512.06L568.187,513.019L568.189,513.95L568.214,514.283L568.253,514.503L568.304,514.624L568.294,514.762L568.152,515.154L568.038,515.566L568.034,515.731L567.99,515.848L567.905,515.951L567.533,516.142L567.47,516.26L567.471,516.474L567.518,516.654L567.658,516.72L567.826,516.822L567.892,516.956L567.893,517.098L567.839,517.361L567.689,517.796L567.839,518.298L568.006,518.624L568.237,519L568.333,519.233L568.328,519.4L568.293,519.563L567.948,520.253L567.699,520.683L567.395,521.143L566.993,521.432L566.889,521.571L566.848,521.729L566.862,522.075L566.844,522.438L566.5,522.995L566.713,523.475L566.665,523.52L566.549,523.588L566.054,524.129L565.553,524.678L565.187,525.079L564.771,525.535L564.305,526.047L563.906,526.486z'/>
 				</g>
 			</svg>
+			</div>
+			</div>
 			<script>
-				$.ajax({
-						url: "index.php",
-						type: 'GET',
-						data: "countries",
-						cache: false,
-						success: function(res) {
-							var json = JSON.parse(res);
-							for (i=0; i<json.length; i++){
-								all = document.getElementsByTagName('path');
-								for (x=0; x<all.length;x++){
-									if (json[i] === all[x].getAttribute("title")){
-										all[x].setAttribute("class", "visited");
-										var para = document.createElement('li');
-										var node = document.createTextNode(json[i]);
-										para.appendChild(node);
-										document.getElementById('list').appendChild(para);
+				function build(){
+					li = document.getElementById('list')
+					while (li.firstChild) {
+    				li.removeChild(li.firstChild);
+					}
+					$.ajax({
+							url: "index.php",
+							type: 'GET',
+							data: "countries",
+							cache: false,
+							success: function(res) {
+								var json = JSON.parse(res);
+								for (i=0; i<json.length; i++){
+									all = document.getElementsByTagName('path');
+									for (x=0; x<all.length;x++){
+										if (json[i] === all[x].getAttribute("title")){
+											all[x].setAttribute("class", "visited");
+											var para = document.createElement('li');
+											var node = document.createTextNode(json[i]);
+											para.appendChild(node);
+											document.getElementById('list').appendChild(para);
+										}
+										else if (all[x].getAttribute("class") === "visited" && (json.indexOf(all[x].getAttribute("title")) <= -1)) {
+											all[x].setAttribute("class", "land");
+										}
 									}
 								}
+							autocomplete();
 							}
-						}
-				});
+					});
+				}
 
-				//
+				build();
+
 				function openNav() {
 				    document.getElementById("mySidenav").style.marginLeft = "0px";
 				    document.getElementById("main").style.marginLeft = "250px";
 						document.getElementById("menu").style.zIndex = "0";
 				}
 
-				/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
 				function closeNav() {
 				    document.getElementById("mySidenav").style.marginLeft = "-250px";
 				    document.getElementById("main").style.marginLeft = "0";
 						setTimeout(function(){document.getElementById("menu").style.zIndex = "11";}, 800);
 				}
 
-				//
-
-			  $( function() {
+			  function autocomplete(){
 			    var availableTags = [];
 					var usedTags = [];
 					for (var i=0; i < document.getElementsByClassName('visited').length ; i++){
-						console.log(document.getElementsByClassName('visited')[i].getAttribute('title'));
 						var name = document.getElementsByClassName('visited')[i].getAttribute('title');
 						usedTags.push(name);
 					};
@@ -528,7 +557,7 @@ $html = <<<EOT
 				 	$( "#tags2" ).autocomplete({
 			      source: usedTags,
 			  	 });
-				});
+				}
 		  </script>
 		</body>
 </html>
