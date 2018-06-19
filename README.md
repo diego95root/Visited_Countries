@@ -5,4 +5,6 @@ There could be infinitely possible improvements (especially concerning the UI) t
 
 ## Screenshots
 
-![Image](https://github.com/diego95root/Visited_Countries/blob/master/Images/screenshot.png "List of available ips to poison:")
+![Image](https://github.com/diego95root/Visited_Countries/blob/master/Images/screen0.png "First screenshot")
+
+![Image](https://github.com/diego95root/Visited_Countries/blob/master/Images/screen1.png "Second screenshot")
