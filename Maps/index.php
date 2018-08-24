@@ -183,13 +183,13 @@ $html = <<<EOT
 			<p>Add country:</p>
 			<div class="ui-widget" style="padding: 10px; margin-left:20px">
 				<form action="javascript:;" onsubmit="add_remove('add');">
-  				<input id="tags" name="country_add" placeholder="Country to remove">
+  				<input id="tags" name="country_add" placeholder="Country to add">
 				</form>
 			</div>
 			<p>Remove country:</p>
 			<div class="ui-widget" style="padding: 10px; margin-left:20px">
 				<form action="javascript:;" onsubmit="add_remove('rem');">
-					<input id="tags2" name="country_remove" placeholder="Country to add">
+					<input id="tags2" name="country_remove" placeholder="Country to remove">
 				</form>
 			</div>
 			<p>Countries</p>
